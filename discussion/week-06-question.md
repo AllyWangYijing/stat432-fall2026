@@ -1,6 +1,6 @@
 ---
-id: w05-allyw2-training-test-roc
-title: "Training and Test Performance in KNN"
+id: w07-allyw2-dimensionality-reduction
+title: "Dimensionality Reduction in LDA and QDA"
 author: "Ally Wang (allyw2)"
 ---
-Why can KNN with k=1 have perfect training performance but much worse test performance, and how does increasing k help reduce this gap?
+How can reducing the number of predictors improve covariance estimation in LDA and QDA while potentially making classification performance worse?
