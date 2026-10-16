@@ -2224,7 +2224,20 @@ vertical-align: -.125em;
 
 </header>
 
-
+<nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#ldaqda-classification-report-skill" id="toc-ldaqda-classification-report-skill">LDA/QDA Classification Report Skill</a>
+  <ul>
+  <li><a href="#invocation" id="toc-invocation">Invocation</a></li>
+  <li><a href="#objective" id="toc-objective">Objective</a></li>
+  <li><a href="#required-inputs" id="toc-required-inputs">Required inputs</a></li>
+  <li><a href="#analysis-protocol" id="toc-analysis-protocol">Analysis protocol</a></li>
+  <li><a href="#one-page-report-layout" id="toc-one-page-report-layout">One-page report layout</a></li>
+  </ul></li>
+  </ul>
+</nav>
 <p><strong>Question 1</strong><br>
 a)</p>
 <div class="cell">
@@ -2544,6 +2557,49 @@ Observed   0   1   2   3   4   5   6   7   8   9
 <p>Using random seed 43259, we reserved 20% of the SAheart observations as a stratified test set and compared LDA/QDA-based candidate models using stratified 5-fold cross-validation on the training data.</p>
 <p>PCA with five components followed by LDA achieved the lowest mean cross-validation misclassification rate of 27.92%. After refitting on the complete training set, the selected model achieved a held-out test misclassification rate of 25.81% (24 errors among 93 observations).</p>
 <p>The results suggest that moderate dimensionality reduction can improve predictive performance. However, differences among some candidate models are relatively small, and the test error is subject to sampling variability.</p>
+<section id="ldaqda-classification-report-skill" class="level1">
+<h1>LDA/QDA Classification Report Skill</h1>
+<section id="invocation" class="level2">
+<h2 class="anchored" data-anchor-id="invocation">Invocation</h2>
+<p>Use this skill only when the user explicitly provides or references this SKILL.md and asks to apply it. Do not auto-activate it. Dataset, response column, predictor columns, and any coding rules must be supplied in the invocation, never assumed here.</p>
+</section>
+<section id="objective" class="level2">
+<h2 class="anchored" data-anchor-id="objective">Objective</h2>
+<p>Find a strong classifier using only LDA, QDA, or their probability-weighted blends. Produce a readable statistical report occupying at most one printed page, containing a figure, a table, and numerical model results. Ensure the evaluation is reproducible and free of test-set leakage.</p>
+</section>
+<section id="required-inputs" class="level2">
+<h2 class="anchored" data-anchor-id="required-inputs">Required inputs</h2>
+<ul>
+<li>Dataset or training data file, response name, predictor names, and any encoding instructions.</li>
+<li>Optional random seed; use and report a fixed seed if none supplied.</li>
+<li>Identify classification labels, missing values, and sample size. Explain exclusions.</li>
+</ul>
+</section>
+<section id="analysis-protocol" class="level2">
+<h2 class="anchored" data-anchor-id="analysis-protocol">Analysis protocol</h2>
+<ol type="1">
+<li>Before inspecting model results, reserve a stratified 20% test set; use 80% for training. Do not use the held-out test set for model choice, preprocessing design, or tuning.</li>
+<li>On the training portion, create one fixed stratified 5-fold cross-validation split and reuse the exact folds for every candidate. Use misclassification rate as the primary selection criterion; show the mean fold error. If classes are too small for five folds, use fewer stratified folds and say why.</li>
+<li>Compare at least ordinary LDA and ordinary QDA, with empirical class priors estimated from each fitting subset. Optionally consider PCA followed by LDA/QDA, using a few prespecified component counts, and/or LDA/QDA probability blends with prespecified weights. Never use classifiers other than LDA, QDA, or their combinations.</li>
+<li>Within each fold, learn all preprocessing (imputation, scaling, PCA, etc.) on that fold’s training observations only. Apply fitted transformations unchanged to its validation fold. Fit each classifier only on the fold’s training subset. For a blend, combine aligned class-probability columns before taking the largest probability.</li>
+<li>Record failures such as singular covariance matrices. Do not silently discard failed folds or leak information across folds. Flag invalid candidate settings and explain why. Select the candidate with the smallest mean CV misclassification rate; break ties in favor of the simpler model.</li>
+<li>Refit the selected candidate and its preprocessing from scratch using the complete training portion. Predict the untouched test set exactly once. Report its misclassification rate and the number of test errors / test cases. Do not change models or settings after viewing this result.</li>
+<li>Check factor levels and probability column ordering, dimensions, class counts, missing values, and whether every figure/table is consistent with computed results.</li>
+</ol>
+</section>
+<section id="one-page-report-layout" class="level2">
+<h2 class="anchored" data-anchor-id="one-page-report-layout">One-page report layout</h2>
+<ul>
+<li><strong>Title and data:</strong> response, number of predictors, training/test sizes, seed, and split/CV design.</li>
+<li><strong>Methods:</strong> brief candidate model list, preprocessing choices, and primary metric.</li>
+<li><strong>Table:</strong> candidate models and their mean 5-fold CV misclassification rates; mark the selected candidate. Note any fitting failures.</li>
+<li><strong>Figure:</strong> a compact, legible comparison plot of CV misclassification rates, with labeled axes and a legend if needed.</li>
+<li><strong>Results:</strong> selected model and settings, CV error, held-out test error, and count misclassified / test sample size.</li>
+<li><strong>Interpretation and limitations:</strong> 2-4 concise sentences on comparative results, sampling variability, assumptions, and any class imbalance or instability.</li>
+</ul>
+<p>Keep the report within one printed page at ordinary readable font size. Put code and implementation details outside the one-page report when requested. Never invent numerical results; if data are unavailable, request them and provide no fabricated table or figure. After generating the report, inspect it for correctness and layout.</p>
+</section>
+</section>
 
 </main>
 <!-- /main column -->
